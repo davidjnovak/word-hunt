@@ -1,0 +1,28 @@
+{
+    "name": "word-hunt-frontend",
+    "version": "1.0.0",
+    "description": "Frontend for Word Hunt game",
+    "main": "main.js",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "serve": "vite preview"
+    },
+    "dependencies": {
+      "axios": "^0.21.1",
+      "socket.io-client": "^4.1.3",
+      "vue": "^3.0.0",
+      "vue-router": "^4.0.0",
+      "vuex": "^4.0.0"
+    },
+    "devDependencies": {
+      "@vitejs/plugin-vue": "^1.2.3",
+      "vite": "^2.4.4"
+    },
+    "engines": {
+      "node": ">=14.0.0"
+    },
+    "author": "Your Name",
+    "license": "MIT"
+  }
+  
