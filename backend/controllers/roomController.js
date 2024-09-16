@@ -84,10 +84,29 @@ const endRound = async (req, res) => {
   }
 };
 
+const startNewRound = async (req, res) => {
+  const { roomId } = req.params;
+  const room = new Room(req.app.locals.client);
+  let roomData = await room.findRoom(roomId);
+  if (roomData) {
+    const newBoard = req.game.generateBoard();
+    roomData.gameState = { board: newBoard, status: 'active', allValidWords: [] };
+    roomData.players.forEach(player => {
+      player.wordsFound = [];
+      player.score = 0;
+    });
+    await room.updateRoom(roomId, { gameState: roomData.gameState, players: roomData.players });
+    res.json({ board: newBoard, players: roomData.players });
+  } else {
+    res.status(404).json({ message: 'Room not found' });
+  }
+};
+
 module.exports = {
   createRoom,
   joinRoom,
   getRoomState,
   submitWord,
-  endRound
+  endRound,
+  startNewRound
 };
