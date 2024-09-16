@@ -1,4 +1,8 @@
 const Room = require('./models/Room');
+const WordHuntGame = require('./gameLogic');
+
+const game = new WordHuntGame();
+game.loadDictionary();
 
 function setupSocket(io, client) {
   const roomModel = new Room(client);
@@ -14,6 +18,7 @@ function setupSocket(io, client) {
           await roomModel.updateRoom(roomId, { players: room.players });
         }
         io.to(roomId).emit('update-players', room.players);
+        socket.emit('game-board', room.gameState.board);
       }
     });
 
@@ -21,11 +26,13 @@ function setupSocket(io, client) {
       let room = await roomModel.findRoom(roomId);
       if (room) {
         let player = room.players.find(p => p.playerId === playerId);
-        if (player && !player.wordsFound.includes(word)) {
+        if (player && !player.wordsFound.includes(word) && game.validateWord(word, room.gameState.board)) {
           player.wordsFound.push(word);
-          player.score += calculateWordScore(word);
+          player.score += game.calculateScore([word]);
           await roomModel.updateRoom(roomId, { players: room.players });
-          socket.emit('update-player', player);
+          io.to(roomId).emit('update-player', player);
+        } else {
+          socket.emit('invalid-word', word);
         }
       }
     });
@@ -34,23 +41,32 @@ function setupSocket(io, client) {
       let room = await roomModel.findRoom(roomId);
       if (room) {
         room.gameState.status = 'finished';
+        const allValidWords = game.findAllValidWords(room.gameState.board);
+        room.gameState.allValidWords = allValidWords;
         await roomModel.updateRoom(roomId, { gameState: room.gameState });
 
-        // Update total scores in Players collection
-        const playerModel = new Player(client);
-        for (let player of room.players) {
-          await playerModel.updatePlayerTotalScore(player.playerId, player.score);
-        }
+        io.to(roomId).emit('round-ended', {
+          players: room.players,
+          allValidWords: allValidWords,
+          totalPossibleScore: game.calculateScore(allValidWords)
+        });
+      }
+    });
 
-        io.to(roomId).emit('end-round', room.players);
+    socket.on('start-new-round', async (roomId) => {
+      let room = await roomModel.findRoom(roomId);
+      if (room) {
+        const newBoard = game.generateBoard();
+        room.gameState = { board: newBoard, status: 'active', allValidWords: [] };
+        room.players.forEach(player => {
+          player.wordsFound = [];
+          player.score = 0;
+        });
+        await roomModel.updateRoom(roomId, { gameState: room.gameState, players: room.players });
+        io.to(roomId).emit('new-round', { board: newBoard, players: room.players });
       }
     });
   });
-}
-
-function calculateWordScore(word) {
-  // Scoring logic based on word length or other criteria
-  return word.length;
 }
 
 module.exports = { setupSocket };

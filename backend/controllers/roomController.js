@@ -1,11 +1,16 @@
 const Room = require('../models/Room');
 const Player = require('../models/Player');
+const WordHuntGame = require('../gameLogic');
+
+const game = new WordHuntGame();
+game.loadDictionary();
 
 const createRoom = async (req, res) => {
   const roomId = Math.random().toString(36).substring(2, 10);
   const room = new Room(req.app.locals.client);
-  await room.createRoom(roomId);
-  res.json({ roomId });
+  const board = game.generateBoard();
+  await room.createRoom(roomId, board);
+  res.json({ roomId, board });
 };
 
 const joinRoom = async (req, res) => {
@@ -41,13 +46,13 @@ const submitWord = async (req, res) => {
   let roomData = await room.findRoom(roomId);
   if (roomData) {
     let player = roomData.players.find(p => p.playerId === playerId);
-    if (player && !player.wordsFound.includes(word)) {
+    if (player && !player.wordsFound.includes(word) && game.validateWord(word, roomData.gameState.board)) {
       player.wordsFound.push(word);
-      player.score += calculateWordScore(word);
+      player.score += game.calculateScore([word]);
       await room.updateRoom(roomId, { players: roomData.players });
       res.json(player);
     } else {
-      res.status(400).json({ message: 'Word already found or player not found' });
+      res.status(400).json({ message: 'Invalid word or word already found' });
     }
   } else {
     res.status(404).json({ message: 'Room not found' });
@@ -60,6 +65,8 @@ const endRound = async (req, res) => {
   let roomData = await room.findRoom(roomId);
   if (roomData) {
     roomData.gameState.status = 'finished';
+    const allValidWords = game.findAllValidWords(roomData.gameState.board);
+    roomData.gameState.allValidWords = allValidWords;
     await room.updateRoom(roomId, { gameState: roomData.gameState });
 
     const playerModel = new Player(req.app.locals.client);
@@ -67,15 +74,15 @@ const endRound = async (req, res) => {
       await playerModel.updatePlayerTotalScore(player.playerId, player.score);
     }
 
-    res.json(roomData.players);
+    res.json({
+      players: roomData.players,
+      allValidWords: allValidWords,
+      totalPossibleScore: game.calculateScore(allValidWords)
+    });
   } else {
     res.status(404).json({ message: 'Room not found' });
   }
 };
-
-function calculateWordScore(word) {
-  return word.length;
-}
 
 module.exports = {
   createRoom,

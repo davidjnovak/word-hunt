@@ -5,14 +5,14 @@ class Room {
     this.collection = client.db('word-hunt').collection('rooms');
   }
 
-  async createRoom(roomId) {
+  async createRoom(roomId, board) {
     const room = {
       roomId,
       players: [],
-      gameState: { board: [], status: 'waiting' }
+      gameState: { board, status: 'waiting', allValidWords: [] }
     };
     await this.collection.insertOne(room);
-    return room;a
+    return room;
   }
 
   async findRoom(roomId) {
