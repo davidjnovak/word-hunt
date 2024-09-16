@@ -7,12 +7,13 @@ require('dotenv').config();
 
 const roomRoutes = require('./routes/roomRoutes');
 const { setupSocket } = require('./socket');
+const WordHuntGame = require('./gameLogic');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const uri = process.env.MONGO_URI; 
+const uri = process.env.MONGO_URI;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -22,23 +23,37 @@ const client = new MongoClient(uri, {
   }
 });
 
-client.connect()
-  .then(() => {
+const game = new WordHuntGame();
+
+async function startServer() {
+  try {
+    await client.connect();
     console.log("MongoDB connected...");
-  })
-  .catch(err => {
-    console.error("Failed to connect to MongoDB", err);
-  });
 
-app.use(cors());
-app.use(express.json());
+    await game.loadDictionary();
+    console.log("Dictionary loaded...");
 
-app.use('/api/rooms', roomRoutes);
+    app.use(cors());
+    app.use(express.json());
 
-setupSocket(io, client);
+    app.use((req, res, next) => {
+      req.game = game;
+      next();
+    });
 
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+    app.use('/api/rooms', roomRoutes);
 
-module.exports = client;
+    setupSocket(io, client, game);
+
+    server.listen(3000, () => {
+      console.log('Server is running on port 3000');
+    });
+  } catch (err) {
+    console.error("Failed to start server", err);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+module.exports = { client, game };
