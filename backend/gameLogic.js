@@ -20,7 +20,6 @@ class WordHuntGame {
       this.allEnglishWords = new Set(data.split('\n').map(word => word.trim().toUpperCase()));
       this.tenLetterWords = [...this.allEnglishWords].filter(word => word.length === 10);
       console.log("Dictionary loaded successfully");
-      console.log("Number of 10-letter words:", this.tenLetterWords.length);
     } catch (error) {
       console.error("Error loading dictionary:", error);
     }
