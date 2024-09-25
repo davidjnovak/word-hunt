@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../pages/Home.vue';
-import GameRoom from '../pages/GameRoom.vue';
-import Leaderboard from '../pages/Leaderboard.vue';
+import Home from '../src/pages/Home.vue';
+import GameRoom from '../src/pages/GameRoom.vue';
 
 const routes = [
   { path: '/', component: Home },
   { path: '/game/:roomId', component: GameRoom },
-  { path: '/leaderboard', component: Leaderboard },
 ];
 
 const router = createRouter({
