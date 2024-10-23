@@ -1,14 +1,15 @@
 <template>
   <div id="app">
-    <h1>Word Hunt Game</h1>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'App'
-};
+})
 </script>
 
 <style>

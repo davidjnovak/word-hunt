@@ -1,13 +1,16 @@
 const { ObjectId } = require('mongodb');
 
 class Player {
-  constructor(client) {
-    this.collection = client.db('word-hunt').collection('players');
+  constructor(db) {
+    if (!db) {
+      throw new Error('Database connection is required');
+    }
+    this.collection = db.collection('players');
   }
 
   async updatePlayerTotalScore(playerId, score) {
     return await this.collection.updateOne(
-      { _id: ObjectId(playerId) },
+      { _id: ObjectId.createFromTime(playerId) },
       { $inc: { totalScore: score } },
       { upsert: true }
     );

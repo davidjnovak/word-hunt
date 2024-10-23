@@ -7,7 +7,7 @@ game.loadDictionary();
 
 const createRoom = async (req, res) => {
   const roomId = Math.random().toString(36).substring(2, 10);
-  const room = new Room(req.app.locals.client);
+  const room = new Room(req.db);
   const board = game.generateBoard();
   await room.createRoom(roomId, board);
   res.json({ roomId, board });
@@ -15,10 +15,13 @@ const createRoom = async (req, res) => {
 
 const joinRoom = async (req, res) => {
   const { roomId, playerId, playerName } = req.body;
-  const room = new Room(req.app.locals.client);
+  console.log(playerId, playerName)
+  const room = new Room(req.db);
   let roomData = await room.findRoom(roomId);
   if (roomData) {
+    console.log("players", roomData.players)
     let player = roomData.players.find(p => p.playerId === playerId);
+    console.log("player", player)
     if (!player) {
       roomData.players.push({ playerId, name: playerName, score: 0, wordsFound: [] });
       await room.updateRoom(roomId, { players: roomData.players });
@@ -31,7 +34,7 @@ const joinRoom = async (req, res) => {
 
 const getRoomState = async (req, res) => {
   const roomId = req.params.roomId;
-  const room = new Room(req.app.locals.client);
+  const room = new Room(req.db);
   const roomData = await room.findRoom(roomId);
   if (roomData) {
     res.json(roomData);
@@ -41,27 +44,61 @@ const getRoomState = async (req, res) => {
 };
 
 const submitWord = async (req, res) => {
-  const { roomId, playerId, word } = req.body;
-  const room = new Room(req.app.locals.client);
+  const { playerId, word } = req.body;
+  const { roomId } = req.params;
+  console.log(`Submitting word: ${word} for player: ${playerId} in room: ${roomId}`);
+
+  const room = new Room(req.db);
   let roomData = await room.findRoom(roomId);
+  
   if (roomData) {
+    console.log('Room found:', roomData);
+    console.log('Players in room:', roomData.players);
+    
+    console.log('Finding player:', playerId);
     let player = roomData.players.find(p => p.playerId === playerId);
-    if (player && !player.wordsFound.includes(word) && game.validateWord(word, roomData.gameState.board)) {
-      player.wordsFound.push(word);
-      player.score += game.calculateScore([word]);
-      await room.updateRoom(roomId, { players: roomData.players });
-      res.json(player);
+    console.log('Player found:', player);
+    
+    if (player) {
+      console.log('Word already found:', player.wordsFound.includes(word));
+      console.log('Word validation result:', game.validateWord(word, roomData.gameState.board));
+      
+      const isValid = !player.wordsFound.includes(word) && game.validateWord(word, roomData.gameState.board);
+      
+      if (isValid) {
+        player.wordsFound.push(word);
+        const score = game.calculateScore([word]);
+        player.score += score;
+        await room.updateRoom(roomId, { players: roomData.players });
+        res.json({ 
+          isValid: true, 
+          score: score, 
+          updatedScore: player.score,
+          playerId: player.playerId
+        });
+      } else {
+        console.log('Word rejected. Already found or invalid.');
+        res.json({ 
+          isValid: false, 
+          score: 0,
+          updatedScore: player.score,
+          playerId: player.playerId
+        });
+      }
     } else {
-      res.status(400).json({ message: 'Invalid word or word already found' });
+      console.log('Player not found in room');
+      res.status(400).json({ message: 'Player not found in room' });
     }
   } else {
+    console.log('Room not found');
     res.status(404).json({ message: 'Room not found' });
   }
 };
 
 const endRound = async (req, res) => {
+  console.log("endRound")
   const { roomId } = req.params;
-  const room = new Room(req.app.locals.client);
+  const room = new Room(req.db);
   let roomData = await room.findRoom(roomId);
   if (roomData) {
     roomData.gameState.status = 'finished';
@@ -69,7 +106,7 @@ const endRound = async (req, res) => {
     roomData.gameState.allValidWords = allValidWords;
     await room.updateRoom(roomId, { gameState: roomData.gameState });
 
-    const playerModel = new Player(req.app.locals.client);
+    const playerModel = new Player(req.db);
     for (let player of roomData.players) {
       await playerModel.updatePlayerTotalScore(player.playerId, player.score);
     }
@@ -86,7 +123,7 @@ const endRound = async (req, res) => {
 
 const startNewRound = async (req, res) => {
   const { roomId } = req.params;
-  const room = new Room(req.app.locals.client);
+  const room = new Room(req.db);
   let roomData = await room.findRoom(roomId);
   if (roomData) {
     const newBoard = req.game.generateBoard();

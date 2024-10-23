@@ -1,28 +1,50 @@
 {
-    "name": "word-hunt-frontend",
-    "version": "1.0.0",
-    "description": "Frontend for Word Hunt game",
-    "main": "main.js",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "serve": "vite preview"
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "^3.8.3",
+    "vue": "^3.2.13"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "socket.io-client": "^4.1.3",
+    "vue-router": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
     },
-    "dependencies": {
-        "axios": "^0.21.1",
-        "repopack": "^0.1.36",
-        "socket.io-client": "^4.1.3",
-        "vue": "^3.0.0",
-        "vue-router": "^4.0.0",
-        "vuex": "^4.0.0"
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
     },
-    "devDependencies": {
-        "@vitejs/plugin-vue": "^1.10.2",
-        "vite": "^2.9.18"
-    },
-    "engines": {
-        "node": ">=14.0.0"
-    },
-    "author": "Your Name",
-    "license": "MIT"
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": ".eslintrc.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

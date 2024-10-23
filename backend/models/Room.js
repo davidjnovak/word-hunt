@@ -1,9 +1,11 @@
-const { ObjectId } = require('mongodb');
-
 class Room {
-  constructor(client) {
-    this.collection = client.db('word-hunt').collection('rooms');
+  constructor(db) {
+    if (!db) {
+      throw new Error('Database connection is required');
+    }
+    this.collection = db.collection('rooms');
   }
+
 
   async createRoom(roomId, board) {
     const room = {

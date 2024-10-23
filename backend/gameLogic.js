@@ -19,7 +19,6 @@ class WordHuntGame {
       const data = await fs.readFile(path.join(__dirname, 'englishwords.txt'), 'utf8');
       this.allEnglishWords = new Set(data.split('\n').map(word => word.trim().toUpperCase()));
       this.tenLetterWords = [...this.allEnglishWords].filter(word => word.length === 10);
-      console.log("Dictionary loaded successfully");
     } catch (error) {
       console.error("Error loading dictionary:", error);
     }
@@ -102,12 +101,12 @@ class WordHuntGame {
 
   calculateScore(words) {
     const scoringTable = {
-      3: 100, 4: 400, 5: 800, 6: 1400, 7: 1800, 8: 2200, 9: 2600
+      3: 100, 4: 400, 5: 800, 6: 1400, 7: 1800, 8: 2200, 9: 2600, 10: 3200
     };
 
     return words.reduce((score, word) => {
       const length = word.length;
-      return score + (length > 9 ? 2600 : (scoringTable[length] || 0));
+      return score + (length > 10 ? 3200 : (scoringTable[length] || 0));
     }, 0);
   }
 
