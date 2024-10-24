@@ -67,6 +67,13 @@ git clone https://github.com/YOUR_GITHUB_USERNAME/word-hunt.git
 ```
 This command can also be found inside the repository page under the **Code** button. Use HTTPS for cloning, unless you have SSH keys set up on your GitHub account.
 
+### Set the original repository as the `upstream` repository
+To be able to pull changes from the original repository, you must configure it as a remote on your local repository
+```bash
+git remote add upstream https://github.com/davidjnovak/word-hunt
+```
+After running this, you can run commands like `git fetch upstream`
+
 ### Claiming Issues
 Contributors should assign themselves issues as follows
 1. Navigate ot the **Issues** tab
