@@ -1,6 +1,6 @@
-# word-hunt project
+# word-hunt SWE experience project
 
-Welcome to the word-hunt project! Here we will go over the steps to make contributions, as well as understanding a little bit about GitHub contribution essentials
+Welcome to the word-hunt SWE experience project! Here we will go over everything you'll need to know to make contributions, as well as understanding a little bit about GitHub contribution essentials
 
 ## Table of Contents
 - [Project Management](#project-management)
