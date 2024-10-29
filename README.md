@@ -3,26 +3,24 @@
 Welcome to the word-hunt SWE experience project! Here we will go over everything you'll need to know to make contributions, as well as understanding a little bit about GitHub contribution essentials
 
 ## Table of Contents
-- [Project Management](#project-management)
-- [Issue Management](#issue-management)
+Acknowledging Issues
+- [Reporting Bugs or Requesting Features](#reporting-bugs-or-requesting-features)
 - [Labeling System](#labeling-system)
+
+Getting Started
 - [How to Contribute](#how-to-contribute)
+- [How to Debug](#how-to-debug)
 - [Resolving Conflicts](#resolving-conflicts)
-- [Important Commands](#important-commands)
+- [Important Git Commands](#important-commands)
 
-## Project Management
-
-In GitHub, we will be utilizing these tools to help keep track of features and changes
-- **Issues**: To track tasks and features
-- **Project Boards**: To visualize progress and manage workflow
-
-## Issue Management
+## Reporting Bugs or Requesting Features
 
 If you come across a bug or a feature you'd like to see but don't want to develop it yourself, you are free to create an issue yourself in hopes that someone else may pick it up. If you are able to develop a feature on your own, you can create a pull request with the new code for approval. As usual, if you are to create a pull request and make a contribution, please follow the [contribution guidelines](#contribution-guidelines)
 
 ### Creating Issues
 - Navigate to the **Issues** tab
 - Click **New issue**
+- **NOTE**: Issues MUST be properly [labeled](#labeling-system) to ensure that the content of the issue is clear
 
 When creating an issue, please include:
 - A clear title
@@ -36,29 +34,44 @@ Contributors should update the status of issues regularly. Use the project board
 
 ## Labeling System
 
-These labels will be used to improve clarity in the development process
+These labels will be used to improve clarity in the development process. Proper labels are required on all issues
 
+### Required Labels
+
+Each issue must contain only one label from the following:
+- `bug` - If the issue pertains to a bug in the code
+- `feature` - If the issue pertains to an undeveloped feature
+
+And one OR both from the following:
+- `frontend` - If the issue is frontend related
+- `backend` - If the issue is backend related
+
+Each issue must also be labeled with a severity level to determine whether an issue is minor or major. Only one of the following labels should be applied to each issue:
+- `severity:low` - If the issue is considered inconsequential. Use this for the most minor and trivial bugs or features
+- `severity:med` - If the issue is considered important, but not game breaking. This will probably be the most common label for most bugs or features
+- `severity:high` - If the issue is game breaking and requires prompt fixing. This will usually only pertain to bugs that break the functionality of a feature
+
+All other labels are optional, and below will list each label and their categories
 - **Type of Work**:
-  - `backend`
-  - `frontend`
   - `bug`
   - `feature`
+  - `frontend`
+  - `backend`
+
+- **Severity**:
+  - `severity:low`
+  - `severity:med`
+  - `severity:high`
 
 - **Status**:
-  - `to do`
-  - `in progress`
-  - `in review`
-  - `completed`
-
-- **Priority**:
-  - `high priority`
-  - `medium priority`
-  - `low priority`
+  - `good first issue` - An issue that is suitable for those with less experience, or just trying to get their feet in the water
+  - `question` / `help wanted` - If more attention is needed towards an issue or a question has been asked in relation to said issue
+  - `completed` - If an issue is complete and no longer requires development
 
 ## How to Contribute
 
 ### Forking the repository
-First, you want to fork the repository to make a working copy of the `main` branch. This can be done by clicking the **Fork** button while on the repository page.
+To begin contributing, you first want to fork the repository to make a working copy of the `main` branch. This can be done by clicking the **Fork** button while on the repository page.
 
 ### Clone your newly forked repository
 To make changes to the codebase, you must clone the repository. To do so, run this script in your terminal on your local machine
@@ -117,11 +130,9 @@ git push origin feature/{feature-name}
 ```
 
 ### Create a Pull Request on Main Repository and Merge Changes
-Once your development is complete, you can create a pull request on the main repository (not your forked one). To make a pull request, go to the pull requests tab on the repository and click "New pull request". You should then be able to select your fork and branch (if you cannot see the option to select a fork, click **compare across forks**).
+Once your development is complete, you can create a pull request on the main repository (not your forked one). To make a pull request, go to the pull requests tab on the repository and click **New pull request**. You should then be able to select your fork and branch (if you cannot see the option to select a fork, click **compare across forks**).
 
 To select your fork and branch to merge, leave the base repository and base branch alone as this is the main repository in which you are merging into, and modify the head repository to be your forked repository and the compare branch to be the feature branch you created. Make sure you are merging the corrct feature branch that corresponds to the feature of the pull request you are creating.
-
-
 
 You should then properly title and describe the pull request, and if the changes are non-breaking and achieves the goal of the ticket you are creating the feature for, then your change will be merged into the upstream repository.
 
