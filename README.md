@@ -1,6 +1,6 @@
-# word-hunt SWE experience project
+# Word Hunt SWE experience project
 
-Welcome to the word-hunt SWE experience project! Here we will go over everything you'll need to know to make contributions, as well as understanding a little bit about GitHub contribution essentials
+Welcome to the Word Hunt SWE experience project! Here we will go over everything you'll need to know to make contributions, as well as understanding a little bit about GitHub contribution essentials. Whether you have little experience with contributing, or need some refreshers, everything you need to know to get started will be stated here in this readme. If something is missing from the readme, feel free to create a [issue/pull request](#reporting-bugs-or-requesting-features) modifying the readme.
 
 ## Table of Contents
 Acknowledging Issues
@@ -9,6 +9,7 @@ Acknowledging Issues
 
 Getting Started
 - [How to Contribute](#how-to-contribute)
+  - [Creating a Pull Request](#create-a-pull-request-on-main-repository-and-merge-changes)
 - [How to Debug](#how-to-debug)
 - [Resolving Conflicts](#resolving-conflicts)
 - [Important Git Commands](#important-commands)
@@ -134,7 +135,7 @@ Once your development is complete, you can create a pull request on the main rep
 
 To select your fork and branch to merge, leave the base repository and base branch alone as this is the main repository in which you are merging into, and modify the head repository to be your forked repository and the compare branch to be the feature branch you created. Make sure you are merging the corrct feature branch that corresponds to the feature of the pull request you are creating.
 
-You should then properly title and describe the pull request, and if the changes are non-breaking and achieves the goal of the ticket you are creating the feature for, then your change will be merged into the upstream repository.
+You should then properly title and describe the pull request, as well as properly [label](#labeling-system) the pr, and if the changes are non-breaking and achieves the goal of the issue you are creating the feature for, then your change will be merged into the upstream repository.
 
 ## Resolving Conflicts
 Occasionally, there will be a time where you pull changes from the upstream repository, and one of the changes you pulled contained changes to a file you're working on. This will cause a conflict in the changes between your file and the pulled file, and in order for you to be able to continue making changes and push to the repository, you need to resolve those changes. If you are using Visual Studio Code, it should show you the upstream changes, and the final change on your local branch after the conflicts are resolved. If you are not using VSC or another IDE that supports conflict resolving, you can follow GitHub's [official guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) on resolving conflicts using the terminal.
