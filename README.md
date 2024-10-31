@@ -1,43 +1,99 @@
 # Word Hunt SWE experience project
-
 Welcome to the Word Hunt SWE experience project! Here we will go over everything you'll need to know to make contributions, as well as understanding a little bit about GitHub contribution essentials. Whether you have little experience with contributing, or need some refreshers, everything you need to know to get started will be stated here in this readme. If something is missing from the readme, feel free to create a [issue/pull request](#reporting-bugs-or-requesting-features) modifying the readme.
 
-## Table of Contents
-Acknowledging Issues
-- [Reporting Bugs or Requesting Features](#reporting-bugs-or-requesting-features)
-- [Labeling System](#labeling-system)
+While the core components of the project have already been laid out for you as issues, you are encouraged to be creative while developing. With that being said, if you have a genuis idea you want to see added or maybe a bug you encounter while testing or developing (try to fix it yourself), refer to [reporting bugs or requesting features](#reporting-bugs-or-requesting-features).
 
-Getting Started
+Furthermore, if you have any questions with anything at all, please feel free to message the slack #word-hunt-project channel, or DM either me (Eddie Falco), Luke Novak, or David Novak. :)
+
+## Table of Contents
+Prerequisites (get familiar with these, then continue)
+- [Reporting Bugs or Requesting Features](#reporting-bugs-or-requesting-features)
+- [Issue Guidelines](#issue-guidelines)
+  - [What Are Issues](#what-are-issues)
+  - [Issue Structure](#issue-structure)
+    - [Feature](#feature)
+    - [Bug](#bug)
+  - [Issue Labeling](#required-issue-labels)
+- [Pull Request Guidelines](#pull-request-guidelines)
+  - [Pull Request Structure](#pull-request-structure)
+  - [Pull Request Labeling](#required-pull-request-labels)
+  - [Linking With Issues](#linking-with-issues)
+
+Getting Started (then start here, at dependencies)
+- [Project Dependencies](#dependencies)
 - [How to Contribute](#how-to-contribute)
+  - [Forking The Repository](#forking-the-repository)
+  - [Clone Your Newly Forked Repository](#clone-your-newly-forked-repository)
+  - [Setting Up The Development Environment](#setting-up-the-development-environment)
+  - [Claiming Issues](#claiming-issues)
+  - [Creating Branches](#create-a-branch-on-your-forked-repository)
+  - [Make Changes](#make-changes)
+  - [Test Changes](#test-your-changes)
+  - [Push Changse](#push-changes)
   - [Creating a Pull Request](#create-a-pull-request-on-main-repository-and-merge-changes)
-- [How to Debug](#how-to-debug)
+- [Code Execution](#code-execution)
+- [Collaboration](#collaboration)
+
+Useful info (if you need clarity)
 - [Resolving Conflicts](#resolving-conflicts)
 - [Important Git Commands](#important-commands)
+  - [Setting Up](#setting-up)
+  - [Debugging Git](#debugging-commands)
+  - [Branches](#branches)
+  - [Fetching and Merging](#fetching-and-merging-pulling)
+  - [Committing, Staging, and Pushing](#committing-staging-and-pushing)
+  - [Un-doing Changes](#un-doing-changes)
+
 
 ## Reporting Bugs or Requesting Features
-
 If you come across a bug or a feature you'd like to see but don't want to develop it yourself, you are free to create an issue yourself in hopes that someone else may pick it up. If you are able to develop a feature on your own, you can create a pull request with the new code for approval. As usual, if you are to create a pull request and make a contribution, please follow the [contribution guidelines](#contribution-guidelines)
 
 ### Creating Issues
-- Navigate to the **Issues** tab
-- Click **New issue**
-- **NOTE**: Issues MUST be properly [labeled](#labeling-system) to ensure that the content of the issue is clear
+Follow the [issue guidelines](#issue-guidelines) below to add an issue
 
-When creating an issue, please include:
-- A clear title
-- A detailed description of the task or bug
-- A detailed explanation of why the issue is neccessary or is major enough to be offloaded to all the contributors to work on. Include neccessary context
-- Examples of existing issue structures can be seen in the **Issues** tab
-- Labels to categorize the issue (see [Labeling System](#labeling-system))
+### Creating Pull Requests
+Follow the [pull request guidelines](#pull-request-guidelines) below to merge changes
 
-### Status Tracking
-Contributors should update the status of issues regularly. Use the project board to move issues from the **To Do** column to the **In Progress** column when starting work and to **Completed** when finished
+## Issue Guidelines
 
-## Labeling System
+#### What are issues
+Issues are one of the core components of a repository. It is where bugs are reported, features are requested, and questions are asked. This is a crucial step in the contribution process. To view the issues on the repository go to the **Issues** tab under the repository name.
 
-These labels will be used to improve clarity in the development process. Proper labels are required on all issues
+Before contribution to the project, you must figure out where to start developing. This can be done by taking a look through the issues and seeing if any catch your eye. If none do, but you have an idea for the project, you can [make your own issue](#issue-structure) for someone else to work on, or take initiative an make changes yourself. If that is the case, then follow the [contribution guidelines](#how-to-contribute) (still read through the prerequisites first).
 
-### Required Labels
+However, if you find an issue you think you can work on, then you should comment on the issue with a message like "Claiming this issue" given that nobody else has claimed it yet. Once you claim the issue, you are free to start developing (again, follow the [contribution guidelines](#how-to-contribute) first).
+
+If you are creating an issue, below are the steps to properly make one.
+
+### Issue structure
+Each issue should follow a general structure so it is clear what is being conveyed. The structure of the issue will vary depending on whether the issue is a bug or a feature (using proper [labels](#required-labels)). The structures are as follows,
+
+#### Feature
+For issues pertaining to features, the content of the issue should contain:
+* A **goal** section (required)
+  * Describe the reason for the feature request and what its intent is
+* A **deliverables** section (required)
+  * A bulleted list of individual components that make up the feature. This can be as little as one item, and doesn't have to be anything crazy as long as it contains the parts to make up the full feature
+* A **notes** section (optional)
+  * A bulleted list of optional notes that can contain any kind of extra messages, info, or whatever else you can think of that feels relevant.
+
+Below is an example of an issue (Lobby System issue) with the proper structure. The format of the structure follows markdown syntax. Each section header is denoted by a # followed by the name of the section (# Goal, # Deliverables, # Notes). Bulleted lists can be denoted by * or -.
+![Issue Example](./resources/images/issue_example.png)
+
+#### Bug
+For issues pertaining to bugs, the format of the content is a little different:
+* A **goal** section (required)
+  * A brief description of the reason to fix the bug (literally anything)
+* An **explanation** section (required)
+  * A comprehensive explanation of what the bug is, why it is an issue, and what solving it would fix
+* A **notes** section (optional)
+  * Same as before, a bulleted list of anything relevant you can think of that didn't fit in the above sections
+
+Here is an example of a bug fix issue
+![Bug Fix Issue Example](./resources/images/issue_example_bug.png)
+
+### Required Issue Labels
+Labeling is highly important during issue creation, as it quickly tells others what the issue pertains to. Labels are added in the right panel under **labels**. The labeling rules are as follows:
 
 Each issue must contain only one label from the following:
 - `bug` - If the issue pertains to a bug in the code
@@ -66,8 +122,59 @@ All other labels are optional, and below will list each label and their categori
 
 - **Status**:
   - `good first issue` - An issue that is suitable for those with less experience, or just trying to get their feet in the water
+  - `large` - For issues that are considered to be a large contribution and might be very complex
   - `question` / `help wanted` - If more attention is needed towards an issue or a question has been asked in relation to said issue
   - `completed` - If an issue is complete and no longer requires development
+
+If you get an output like "v20.18.0", then you are all done. If you do not get an output with a version number, then check back to make sure you installed Node properly, otherwise reinstall and see what happens. If all else fails, please feel free to shoot a message into slack or dm me, luke, or david.
+
+## Pull Request Guidelines
+If the content of this section is confusing, it might be helpful to come back to this after you read the [contribution guidelines](#how-to-contribute).
+
+When you want to make changes to the upstream repository (from a branch of your forked repository), you must make a pull reqeust on the upstream repository.
+
+To make a pull request, go to the pull requests tab on the upstream repository and click **New pull request**. You should then be able to select your fork and branch (if you cannot see the option to select a fork, click **compare across forks**).
+
+To merge your branch, leave the base repository and base branch alone as this is the repository which you are merging into, and modify the head repository to be your forked repository and the compare branch to be the feature branch you created. Make sure you are merging the correct feature branch that corresponds to the feature of the pull request you are creating.
+
+### Pull Request Structure
+Now, you should title your pull request something relevant to the changes you are attempting to merge. For example, if you are merging the entirety of the backend for the lobby system, you could title the pr "Lobby System Backend".
+
+For the body of the pr, like the issues, you should clearly describe the chagnes being made to the upstream repository. Each pull request should include:
+
+* A **description** section (required)
+  * Outline the changes that were made, and a brief overview of the feature.
+* A **notes** section (optional)
+  * Any extra info you think is relevant to the pr but doesn't fit in the description
+
+### Required Pull Request Labels
+When it comes to labeling a pr, it should generally follow the same rules as issue labeling, besides a few other rules. Pull requests utilize the `bug-fix` label instead of the `bug` label for added clarity. The pull request labeling rules are as follows:
+
+Each pull request should contain one of the following labels, but preferably not both:
+- `feature` - For pull requests adding features
+- `bug-fix` - For pull requests fixing a bug
+
+Each pull request should contain one of the following labels, but prefereably not both (if both, try to split up the pr into a backend code merge and a frontend code merge):
+- `backend` - For pull requests pertaining to backend code
+- `frontend` - For pull requests pertaining to frontend code
+
+Each pull request should contain only one of the following labels:
+- `severity:low` - For a pull request that is minor or trivial, not used often
+- `severity:med` - For a pull request that is of moderate impact, most used
+- `severity:high` - For a pull request that has a major impact, usually for major bug fixes
+
+### Linking With Issues
+If your pull request was a direct response to an issue that you previously claimed, it is best practice to **link** your pull request to the relevant issue. This way, if your pull request is merged the issue that was associated with the pull request will automatically close and will be marked as complete. To do this, go to the **development** section on the right panel and add the relevant issue.
+
+## Dependencies
+Before you start, you need to have Node.js (and npm) installed to your machine if not already. If you already have it, you can skip this step.
+
+You can install Node.js [here](https://nodejs.org/en/download/prebuilt-installer). When installing, ensure you install `npm` (this is how you will execute the code during testing, it should be an option in the installer).
+
+When the installer is finished, open a new terminal window and run
+```bash
+node --version
+```
 
 ## How to Contribute
 
@@ -81,19 +188,40 @@ git clone https://github.com/YOUR_GITHUB_USERNAME/word-hunt.git
 ```
 This command can also be found inside the repository page under the **Code** button. Use HTTPS for cloning, unless you have SSH keys set up on your GitHub account.
 
+### Setting up the development environment
+After your repository is on your machine, the first thing you want to do is install all the required Node.js packages (located in `packages.json` in `./`, `./backend`, and `./frontend` respectively). To do so, first open a terminal and make sure you are inside of `word-hunt`. Then run
+
+```bash
+npm install
+```
+
+Note: if `npm` fails, make sure it was installed during the [Node.js installation](#dependencies).
+
+Next, you want to `cd` into the `./frontend` directory  from `word-hunt`
+
+```bash
+cd frontend
+```
+
+Run `npm install` again inside, then
+
+```bash
+cd ../backend
+```
+
+Once again, run `npm install`
+
+Once all three directories have been `npm installed`'d, you are good to move on to the next steps!
+
 ### Set the original repository as the `upstream` repository
 To be able to pull changes from the original repository, you must configure it as a remote on your local repository
 ```bash
 git remote add upstream https://github.com/davidjnovak/word-hunt
 ```
-After running this, you can run commands like `git fetch upstream`
+After running this, you can run commands like `git fetch upstream` (I'll go over that a little further down)
 
 ### Claiming Issues
-Contributors should assign themselves issues as follows
-1. Navigate ot the **Issues** tab
-2. Click on the issue you wish to work on
-3. Comment on the issue with a message like "Claiming this issue"
-4. Add the **In Progress** label to the issue
+As mentioned in the [issue guidelines](#issue-guidelines), when you are ready to start developing, you can claim an issue to work on. To do so, navigate to the **Issues** tab, find an issue, comment on it with a message like "Claiming this issue", and begin developing the feature/fixing the bug.
 
 ### Create a branch on your forked repository
 After claiming a new issue, you must create a new branch for the new feature development. The purpose of creating a branch is to ensure that the changes you make stay isolated in your development environment (branch), and makes [resolving conflicts](#resolving-conflicts) simpler.
@@ -118,24 +246,43 @@ git merge upstream/main
 ```
 
 ### Make Changes
-After you have made your changes, you must commit them with a clear and meaningful message. You can make multiple commits before pushing, and it is good practice to make commits after every milestone in your development (you finished an important part of your feature).
+After you have made your changes, you must commit them with a clear and meaningful message. You can make multiple commits before pushing, and it is good practice to make commits after every milestone in your development (you finished an important part of your feature, fixed a portion of a bug, etc).
 ```bash
 git add .
 git commit -m "Add new feature"
 ```
 
+### Test Your Changes
+It is important to always be debugging and testing your code to make sure everything works as intended, and no unintended bugs occur. Follow the [code execution guidelines](#code-execution) to figure out how to run and test your code.
+
 ### Push Changes
-Push your commits to your forked repository at the feature branch
+Once you are happy with your code, push your commits to your forked repository at the feature branch
 ```bash
 git push origin feature/{feature-name}
 ```
 
 ### Create a Pull Request on Main Repository and Merge Changes
-Once your development is complete, you can create a pull request on the main repository (not your forked one). To make a pull request, go to the pull requests tab on the repository and click **New pull request**. You should then be able to select your fork and branch (if you cannot see the option to select a fork, click **compare across forks**).
+Refer to [pull request guideilnes](#pull-request-guidelines)
 
-To select your fork and branch to merge, leave the base repository and base branch alone as this is the main repository in which you are merging into, and modify the head repository to be your forked repository and the compare branch to be the feature branch you created. Make sure you are merging the corrct feature branch that corresponds to the feature of the pull request you are creating.
+## Code Execution
+When you are satisfied with your code, or you want to test out your active development, make sure your changes are saved and run these commands.
 
-You should then properly title and describe the pull request, as well as properly [label](#labeling-system) the pr, and if the changes are non-breaking and achieves the goal of the issue you are creating the feature for, then your change will be merged into the upstream repository.
+### 1. Serve the frontend
+Inside a terminal at `./frontend`, run:
+#### `npm run serve`
+
+### 2. Run the backend service
+Inside a terminal at `./backend`, run:
+#### `npm run dev`
+
+When the frontend and backend are running, and assuming they are doing so successfully, you can navigate to http://localhost:3000 and view the project relative to your local machine.
+
+To stop execution of either, run hit `Ctrl+C` inside your terminal to interrupt services.
+
+## Collaboration
+If you and a group member come across an issue that is too large for only one of you, you can collaborate towards developing the feature together.
+
+To do this, you can follow a similar procedure to [the contribution guidelines](#how-to-contribute), in that one of you will fork the other's forked repository and contribute the same way you would here. The only difference is the person who owns the original fork would have to be the one to make a [PR](#create-a-pull-request-on-main-repository-and-merge-changes).
 
 ## Resolving Conflicts
 Occasionally, there will be a time where you pull changes from the upstream repository, and one of the changes you pulled contained changes to a file you're working on. This will cause a conflict in the changes between your file and the pulled file, and in order for you to be able to continue making changes and push to the repository, you need to resolve those changes. If you are using Visual Studio Code, it should show you the upstream changes, and the final change on your local branch after the conflicts are resolved. If you are not using VSC or another IDE that supports conflict resolving, you can follow GitHub's [official guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line) on resolving conflicts using the terminal.
