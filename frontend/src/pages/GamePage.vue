@@ -103,7 +103,7 @@ export default {
           const response = await axios.post('http://localhost:3000/api/rooms/join', {
             roomId: route.params.roomId,
             playerId: playerId.value,
-            playerName: 'Player ' + Math.floor(Math.random() * 1000),
+            playerName: route.query.playerName,
           });
           roomId.value = route.params.roomId;
           board.value = response.data.gameState.board;
