@@ -63,9 +63,13 @@ Before contribution to the project, you must figure out where to start developin
 
 However, if you find an issue you think you can work on, then you should comment on the issue with a message like "Claiming this issue" given that nobody else has claimed it yet. Once you claim the issue, you are free to start developing (again, follow the [contribution guidelines](#how-to-contribute) first).
 
+**NOTE**: You may notice some issues have a **Related Issues** section on their description. Many components of this project have features that contain backend and frontend pieces. To add a layer of abstraction and separation-of-duties, related frontend and backend components are almost always separated into two different issues. For example, lets say you want to develop the Real-Time Chat System. You will likely notice that there are two issues that have Real-Time Chat in them, however, one is a the backend component and one is the frontend component. This is the case for many systems, as they have a backend system and a corresponding frontend response.
+
+In the case that you want to develop an issue that has a related issue, you can develop either both at the same time (make sure to claim both), or you can begin developing one and keep an eye on the other. What will happen is that you will run into a block in your ability to code any further until the other related component is complete. If you can complete your component, the person who is delegated to develop the corresponding component will keep an eye on the status of your issue and see whether it is opened or closed. If it is closed, then they know the component is complete and they can integrate their code with yours. If this is too confusing, please reach out for clarification, I understand that this methodology is a little complex and probably unorthodox.
+
 If you are creating an issue, below are the steps to properly make one.
 
-### Issue structure
+### Issue Structure
 Each issue should follow a general structure so it is clear what is being conveyed. The structure of the issue will vary depending on whether the issue is a bug or a feature (using proper [labels](#required-labels)). The structures are as follows,
 
 #### Feature
@@ -76,8 +80,12 @@ For issues pertaining to features, the content of the issue should contain:
   * A bulleted list of individual components that make up the feature. This can be as little as one item, and doesn't have to be anything crazy as long as it contains the parts to make up the full feature
 * A **notes** section (optional)
   * A bulleted list of optional notes that can contain any kind of extra messages, info, or whatever else you can think of that feels relevant.
+* A **related issues** section (optional)
+  * A list of issue references (usually only just one other) that directly relate to the new issue. This is typically only for issues that have backend AND frontend components, but are split into two issues.
 
-Below is an example of an issue (Lobby System issue) with the proper structure. The format of the structure follows markdown syntax. Each section header is denoted by a # followed by the name of the section (# Goal, # Deliverables, # Notes). Bulleted lists can be denoted by * or -.
+Like mentioned above, if your feature has a backend and frontend component, try to split them up into two respective issues and add each as a related issue on the other.
+
+Below is an example of an issue (Lobby System issue) with the proper structure. The format of the structure follows markdown syntax. Each section header is denoted by a # followed by the name of the section (# Goal, # Deliverables, # Notes). Bulleted lists can be denoted by * or -. Issue references are denoted by a # and then the number of the issue (you will see an autofill when you hit #, just find the issue if its been made already).
 ![Issue Example](./resources/images/issue_example.png)
 
 #### Bug
