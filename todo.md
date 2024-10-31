@@ -11,6 +11,9 @@
 * Create room settings (editable only by host, preferrably) to allow for customization. Some settings could include modifying the grid dimensions, or changing the duration of the game. A [corresponding change to the frontend](#settingsCreationFrontend) will also need to be made.
 * Create a list of english words / add to `englishwords.txt` which will be pulled from during grid generation
 * Create a timer that is synced amongst all clients
+* RTC amongst connected clients. Likely in the form of a chat room
+* Local leaderboard that shows each player's points after the end of the round
+* Global leaderboard to store each player's points (max points)
 
 ### Frontend
 * Pretty up the pages, namely the create/join and the room pages
@@ -20,3 +23,4 @@
 * Mobile friendly interface (swiping on the grid instead of typing)
 * Add more feedback on the room page for events that happen in-game (if a word is not found in the grid, if a word has already been guessed, if a word was correct, etc.)
 * Add a timer to the room page
+* Leaderboard pages in accordance with the backend
