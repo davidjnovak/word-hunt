@@ -54,10 +54,11 @@ export default {
     const allValidWords = ref([]);
     const totalPossibleScore = ref(0);
     const playerId = ref('');
+    const playerName = ref(route.query.playerName || '');
 
     const setupSocket = () => {
       socket.value = io('http://localhost:3000');
-      socket.value.emit('join-room', roomId.value, playerId.value, 'Player ' + Math.floor(Math.random() * 1000));
+      socket.value.emit('join-room', roomId.value, playerId.value, 'Player ' + playerName.value + Math.floor(Math.random() * 1000));
 
       socket.value.on('update-players', (updatedPlayers) => {
         players.value = updatedPlayers;
@@ -103,7 +104,7 @@ export default {
           const response = await axios.post('http://localhost:3000/api/rooms/join', {
             roomId: route.params.roomId,
             playerId: playerId.value,
-            playerName: 'Player ' + Math.floor(Math.random() * 1000),
+            playerName: 'Player ' + playerName.value + Math.floor(Math.random() * 1000),
           });
           roomId.value = route.params.roomId;
           board.value = response.data.gameState.board;
@@ -198,6 +199,7 @@ export default {
       endRound,
       startNewRound,
       playerId,
+      playerName,
     };
   },
 };

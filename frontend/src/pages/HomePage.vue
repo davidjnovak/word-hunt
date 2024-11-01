@@ -3,6 +3,8 @@
     <h1>Word Hunt</h1>
     <div class="actions">
       <button @click="createGameRoom" class="action-button">Create Game Room</button>
+      <label for="playerName">Nhập tên của bạn:</label>
+      <input id="playerName" v-model="playerName" type="text" placeholder="Tên của bạn" />
       <div class="join-game">
         <input v-model="roomId" placeholder="Enter room ID" class="room-input" />
         <button @click="joinGame" class="action-button">Join Game</button>
@@ -21,15 +23,23 @@ export default {
   setup() {
     const router = useRouter();
     const roomId = ref('');
+    const playerName = ref('');
 
     const createGameRoom = async () => {
+      if (!playerName.value.trim()) {
+        alert('Vui lòng nhập tên của bạn.');
+        return;
+      }
       try {
         console.log('Creating a game room...');
         const response = await axios.post('http://localhost:3000/api/rooms/create');
         console.log('Room created:', response.data);
         const { roomId } = response.data;
         console.log('Navigating to game room:', roomId);
-        router.push(`/game/${roomId}`);
+        router.push({
+          path: `/game/${roomId}`,
+          query: { playerName: playerName.value },
+        });
       } catch (error) {
         console.error('Error creating room:', error);
         alert('Failed to create a game room. Please try again.');
@@ -37,8 +47,15 @@ export default {
     };
 
     const joinGame = () => {
+      if (!playerName.value.trim()) {
+        alert('Vui lòng nhập tên của bạn.');
+        return;
+      }
       if (roomId.value) {
-        router.push(`/game/${roomId.value}`);
+        router.push({
+          path: `/game/${roomId.value}`,
+          query: { playerName: playerName.value },
+        });
       } else {
         alert('Please enter a room ID to join a game.');
       }
@@ -46,11 +63,13 @@ export default {
 
     return {
       roomId,
+      playerName,
       createGameRoom,
       joinGame
     };
   }
 };
+
 </script>
 
 <style scoped>
