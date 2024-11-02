@@ -24,6 +24,13 @@ class Room {
   async updateRoom(roomId, update) {
     return await this.collection.updateOne({ roomId }, { $set: update });
   }
+
+  async updatePlayerScores(roomId, players) {
+    return await this.collection.updateOne(
+      { roomId },
+      { $set: { players } }
+    );
+  }
 }
 
 module.exports = Room;
