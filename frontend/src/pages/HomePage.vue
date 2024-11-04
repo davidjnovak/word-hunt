@@ -3,8 +3,8 @@
     <h1>Word Hunt</h1>
     <div class="actions">
       <button @click="createGameRoom" class="action-button">Create Game Room</button>
-      <label for="playerName">Nhập tên của bạn:</label>
-      <input id="playerName" v-model="playerName" type="text" placeholder="Tên của bạn" />
+      <label for="playerName">Enter Your Name:</label>
+      <input id="playerName" v-model="playerName" type="text" placeholder="Your Name" />
       <div class="join-game">
         <input v-model="roomId" placeholder="Enter room ID" class="room-input" />
         <button @click="joinGame" class="action-button">Join Game</button>
@@ -27,7 +27,7 @@ export default {
 
     const createGameRoom = async () => {
       if (!playerName.value.trim()) {
-        alert('Vui lòng nhập tên của bạn.');
+        alert('Please Enter Your Name.');
         return;
       }
       try {
@@ -48,7 +48,7 @@ export default {
 
     const joinGame = () => {
       if (!playerName.value.trim()) {
-        alert('Vui lòng nhập tên của bạn.');
+        alert('Please Enter Your Name.');
         return;
       }
       if (roomId.value) {
