@@ -1,7 +1,7 @@
 <template>
     <div class="player-name-input">
-        <input type="text" v-model="playerName" placeholder="Nhập tên của bạn" @keyup.enter="submitName" />
-        <button @click="submitName">Gửi</button>
+        <input type="text" v-model="playerName" placeholder="Enter your name" @keyup.enter="submitName" />
+        <button @click="submitName">Submit</button>
     </div>
 </template>
 
@@ -15,9 +15,9 @@ export default {
     methods: {
         submitName() {
             if (this.playerName.trim()) {
-                // Gửi tên người chơi lên server hoặc cập nhật vào store
+                // Submit player names to the server or update to the store
                 this.$emit('name-submitted', this.playerName);
-                this.playerName = ''; // Xóa ô nhập sau khi gửi
+                this.playerName = ''; // Clear input box after submitting
             }
         }
     }
