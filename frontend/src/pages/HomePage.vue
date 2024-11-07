@@ -2,6 +2,7 @@
   <div class="home-page">
     <h1>Word Hunt</h1>
     <div class="actions">
+      <input v-model="playerName" placeholder="Enter player name" class="room-input" />
       <button @click="createGameRoom" class="action-button">Create Game Room</button>
       <div class="join-game">
         <input v-model="roomId" placeholder="Enter room ID" class="room-input" />
@@ -21,15 +22,21 @@ export default {
   setup() {
     const router = useRouter();
     const roomId = ref('');
+    const playerName = ref('');
 
     const createGameRoom = async () => {
       try {
+        if (!playerName.value) {
+          alert('Please enter a player name to create a game.');
+          return;
+        }
         console.log('Creating a game room...');
         const response = await axios.post('http://localhost:3000/api/rooms/create');
         console.log('Room created:', response.data);
         const { roomId } = response.data;
         console.log('Navigating to game room:', roomId);
-        router.push(`/game/${roomId}`);
+        console.log("🚀 ~ createGameRoom ~ playerName.value:", playerName.value)
+        router.push(`/game/${roomId}${playerName.value ? '?playerName=' + playerName.value : ''}`);
       } catch (error) {
         console.error('Error creating room:', error);
         alert('Failed to create a game room. Please try again.');
@@ -37,8 +44,12 @@ export default {
     };
 
     const joinGame = () => {
+      if (!playerName.value) {
+        alert('Please enter a player name to create a game.');
+        return;
+      }
       if (roomId.value) {
-        router.push(`/game/${roomId.value}`);
+        router.push(`/game/${roomId.value}${playerName.value ? '?playerName=' + playerName.value : ''}`);
       } else {
         alert('Please enter a room ID to join a game.');
       }
@@ -47,7 +58,8 @@ export default {
     return {
       roomId,
       createGameRoom,
-      joinGame
+      joinGame,
+      playerName
     };
   }
 };
