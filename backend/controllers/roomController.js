@@ -96,7 +96,7 @@ const submitWord = async (req, res) => {
 };
 
 const endRound = async (req, res) => {
-  console.log("endRound")
+  console.log("endRound");
   const { roomId } = req.params;
   const room = new Room(req.db);
   let roomData = await room.findRoom(roomId);
@@ -110,6 +110,9 @@ const endRound = async (req, res) => {
     for (let player of roomData.players) {
       await playerModel.updatePlayerTotalScore(player.playerId, player.score);
     }
+
+    // Save player scores in the room
+    await room.updatePlayerScores(roomId, roomData.players);
 
     res.json({
       players: roomData.players,

@@ -28,6 +28,7 @@
     <div v-if="roundEnded">
       <h3>Round Ended</h3>
       <p>Total Possible Score: {{ totalPossibleScore }}</p>
+      <PlayerScores :players="players" />
       <h4>All Valid Words:</h4>
       <ul>
         <li v-for="word in allValidWords" :key="word">{{ word }}</li>
@@ -41,8 +42,12 @@ import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import io from 'socket.io-client';
+import PlayerScores from '@/components/PlayerScores';
 
 export default {
+  components: {
+    PlayerScores
+  },
   setup() {
     const route = useRoute();
     const roomId = ref(null);
@@ -168,6 +173,7 @@ export default {
         roundEnded.value = true;
         allValidWords.value = response.data.allValidWords;
         totalPossibleScore.value = response.data.totalPossibleScore;
+        players.value = response.data.players; // Update players state
       } catch (error) {
         console.error('Error ending round:', error);
       }
