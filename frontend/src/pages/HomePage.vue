@@ -23,6 +23,7 @@ export default {
     const router = useRouter();
     const roomId = ref('');
     const playerName = ref('');
+    localStorage.removeItem('playerId');
 
     const createGameRoom = async () => {
       try {
