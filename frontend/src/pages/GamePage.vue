@@ -53,7 +53,7 @@ export default {
     const roundEnded = ref(false);
     const allValidWords = ref([]);
     const totalPossibleScore = ref(0);
-    const playerId = ref('');
+    const playerId = ref(localStorage.getItem("playerId"));
 
     const setupSocket = () => {
       socket.value = io('http://localhost:3000');
@@ -99,7 +99,11 @@ export default {
       if (route.params.roomId) {
         // Join existing room
         try {
-          playerId.value = 'player' + Math.random().toString(36).substr(2, 9);
+          if (!playerId.value) {
+            playerId.value = 'player' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem("playerId", playerId.value);
+          }
+          
           const response = await axios.post('http://localhost:3000/api/rooms/join', {
             roomId: route.params.roomId,
             playerId: playerId.value,
