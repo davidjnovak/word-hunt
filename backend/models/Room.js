@@ -6,12 +6,16 @@ class Room {
     this.collection = db.collection('rooms');
   }
 
-
-  async createRoom(roomId, board) {
+  async createRoom(roomId, board, validWords) {
     const room = {
       roomId,
       players: [],
-      gameState: { board, status: 'waiting', allValidWords: [] }
+      gameState: { 
+        board, 
+        status: 'waiting', 
+        validWords,
+        allValidWords: validWords
+      }
     };
     await this.collection.insertOne(room);
     return room;
@@ -19,6 +23,17 @@ class Room {
 
   async findRoom(roomId) {
     return await this.collection.findOne({ roomId });
+  }
+
+  async canAddPlayer(roomId, playerName) {
+    const room = await this.findRoom(roomId);
+    if (!room) return { allowed: false, reason: 'Room not found' };
+    
+    if (room.players.length >= 25) {
+      return { allowed: false, reason: 'Room is full (max 25 players)' };
+    }
+
+    return { allowed: true };
   }
 
   async updateRoom(roomId, update) {
