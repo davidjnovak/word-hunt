@@ -20,6 +20,7 @@ notes.txt
 .env.*.local
 .firebase
 .firebaserc
+backend/.env
 
 # Log files
 npm-debug.log*
