@@ -1,14 +1,25 @@
 .DS_Store
 node_modules
-backend/node_modules
-frontend/node_modules
-/dist
+package-lock.json
 
-repopack-output.txt
+frontend/node_modules
+frontend/next_prompt.txt
+frontend/dist
+frontend/package-lock.json
+
+backend/dist
+backend/node_modules
+backend/package-lock.json
+
+repomix-output.txt
+firebase.js
+notes.txt
 
 # local env files
 .env.local
 .env.*.local
+.firebase
+.firebaserc
 
 # Log files
 npm-debug.log*
