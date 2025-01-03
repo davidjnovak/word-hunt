@@ -1,65 +1,75 @@
+<!-- HomePage.vue -->
 <template>
   <div class="home-page">
-    <h1>Word Hunt</h1>
+    <h1>Word Finder</h1>
     <div class="actions">
-      <input v-model="playerName" placeholder="Enter player name" class="room-input" />
-      <button @click="createGameRoom" class="action-button">Create Game Room</button>
-      <div class="join-game">
-        <input v-model="roomId" placeholder="Enter room ID" class="room-input" />
-        <button @click="joinGame" class="action-button">Join Game</button>
-      </div>
+      <input 
+        v-model="playerName" 
+        placeholder="Enter your name" 
+        class="room-input" 
+      />
+      <input 
+        v-model="gameId" 
+        placeholder="Enter game ID" 
+        class="room-input"
+      />
+      <button 
+        @click="joinOrCreateGame" 
+        class="action-button"
+        :disabled="!isFormValid"
+      >
+        Join/Create Game
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { setCookie, getCookie } from '../utils/cookieUtil.js';
+import { useToast } from 'vue-toastification';
 
 export default {
   name: 'HomePage',
   setup() {
     const router = useRouter();
-    const roomId = ref('');
+    const route = useRoute();
+    const gameId = ref('');
     const playerName = ref('');
+    const toast = useToast();
 
-    const createGameRoom = async () => {
-      try {
-        if (!playerName.value) {
-          alert('Please enter a player name to create a game.');
-          return;
-        }
-        console.log('Creating a game room...');
-        const response = await axios.post('http://localhost:3000/api/rooms/create');
-        console.log('Room created:', response.data);
-        const { roomId } = response.data;
-        console.log('Navigating to game room:', roomId);
-        console.log("🚀 ~ createGameRoom ~ playerName.value:", playerName.value)
-        router.push(`/game/${roomId}${playerName.value ? '?playerName=' + playerName.value : ''}`);
-      } catch (error) {
-        console.error('Error creating room:', error);
-        alert('Failed to create a game room. Please try again.');
+    const isFormValid = computed(() => {
+      return playerName.value.trim() && gameId.value.trim();
+    });
+
+    onMounted(() => {
+      const redirectedGameId = route.query.gameId;
+      if (redirectedGameId) {
+        gameId.value = redirectedGameId;
       }
-    };
 
-    const joinGame = () => {
-      if (!playerName.value) {
-        alert('Please enter a player name to create a game.');
+      const existingName = getCookie('playerName');
+      if (existingName) {
+        playerName.value = existingName;
+      }
+    });
+
+    const joinOrCreateGame = () => {
+      if (!isFormValid.value) {
+        toast.error('Please fill in both name and game ID.');
         return;
       }
-      if (roomId.value) {
-        router.push(`/game/${roomId.value}${playerName.value ? '?playerName=' + playerName.value : ''}`);
-      } else {
-        alert('Please enter a room ID to join a game.');
-      }
+
+      setCookie('playerName', playerName.value.trim());
+      router.push(`/game/${gameId.value.trim()}`);
     };
 
     return {
-      roomId,
-      createGameRoom,
-      joinGame,
-      playerName
+      gameId,
+      playerName,
+      joinOrCreateGame,
+      isFormValid
     };
   }
 };
@@ -85,6 +95,17 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.room-input {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .action-button {
@@ -95,22 +116,17 @@ h1 {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
-.action-button:hover {
+.action-button:hover:not(:disabled) {
   background-color: #45a049;
+  transform: translateY(-2px);
 }
 
-.join-game {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.room-input {
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.action-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 </style>
