@@ -11,7 +11,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:8080", // adjust this to match your client's URL
+    origin: ["https://word-finder-6aaaf.web.app", "http://localhost:8080"],
+    credentials: true,
     methods: ["GET", "POST"]
   }
 });
@@ -33,7 +34,13 @@ async function startServer() {
 
     const database = client.db('word-hunt');
 
-    app.use(cors());
+    
+    app.use(cors({
+      origin: ["https://word-finder-6aaaf.web.app", "http://localhost:5002"],
+      methods: ["GET", "POST", "OPTIONS"],
+      credentials: true
+    }));
+
     app.use(express.json());
 
     const game = new WordHuntGame();
