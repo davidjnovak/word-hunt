@@ -1,29 +1,14 @@
 <template>
   <div class="game-room">
-    <div v-if="roundStatus === 'notStarted'">
-      <h2>Welcome! Ready to start a round?</h2>
-      <button 
-        class="button primary"
-        @click="initiateCountdown"
-      >
-        Start Round
-      </button>
-    </div>
-
-    <div v-else-if="roundStatus === 'countingDown'">
-      <h2>Get Ready! Round starts in {{ countdownValue }}...</h2>
-    </div>
-
-    <div v-else-if="roundStatus === 'inProgress'">
+    <!-- We remove the "notStarted" and "countingDown" states entirely -->
+    <!-- Round in Progress -->
+    <div v-if="roundStatus === 'inProgress'">
       <div class="in-round-top-bar">
-        <div 
-          class="current-word" 
-          :class="highlightClass"
-        >
+        <div class="current-word" :class="highlightClass">
           {{ currentWord }}
         </div>
       </div>
-      <div 
+      <div
         class="game-board board-in-progress"
         @touchstart.prevent="handleTouchStart"
         @touchmove.prevent="handleTouchMove"
@@ -34,23 +19,19 @@
         @mouseleave.prevent="handleMouseUp"
       >
         <div v-for="(row, rowIndex) in board" :key="rowIndex" class="board-row">
-          <div 
-            v-for="(letter, colIndex) in row" 
-            :key="colIndex" 
+          <div
+            v-for="(letter, colIndex) in row"
+            :key="colIndex"
             class="board-cell"
-            :class="{
-              'selected': isSelected(rowIndex, colIndex)
-            }"
+            :class="{ 'selected': isSelected(rowIndex, colIndex) }"
             :data-row="rowIndex"
             :data-col="colIndex"
           >
             {{ letter }}
-            <!-- Color-coded highlight for currently swiped cells -->
-            <div 
+            <div
               class="cell-highlight"
               :class="getCellHighlightClass(rowIndex, colIndex)"
-            >
-            </div>
+            ></div>
           </div>
         </div>
       </div>
@@ -58,38 +39,32 @@
       <div class="timer-label">Time left: {{ roundTimeLeft }}s</div>
     </div>
 
-    <!-- ROUND ENDED -->
+    <!-- Round Ended -->
     <div v-else-if="roundStatus === 'ended'">
       <h2>Round Ended</h2>
       <div class="player-list">
         <h3>Players:</h3>
         <ul>
-          <li 
-            v-for="player in sortedPlayers" 
-            :key="player.playerId" 
+          <li
+            v-for="player in sortedPlayers"
+            :key="player.playerId"
             :class="{ 'current-player': player.playerId === playerId }"
           >
             {{ player.name }} - Score: {{ player.score }}
             <span v-if="player.playerId === playerId"> (You)</span>
-            <div 
-              v-if="player.playerId === playerId" 
-              class="words-found"
-            >
+            <div v-if="player.playerId === playerId" class="words-found">
               Words found: {{ player.wordsFound.join(', ') }}
             </div>
           </li>
         </ul>
       </div>
-      <button
-        class="button success"
-        @click="startNewRound"
-      >
+      <button class="button success" @click="startNewRound">
         Start Next Round
       </button>
       <h4>All Valid Words (sorted by length):</h4>
       <div class="valid-words-grid">
-        <span 
-          v-for="word in sortedAllValidWords" 
+        <span
+          v-for="word in sortedAllValidWords"
           :key="word"
           :class="{ 'found-word': playerFoundWord(word) }"
         >
@@ -115,7 +90,7 @@ export default {
     const router = useRouter();
     const toast = useToast();
 
-    // Room / Board Data
+    // Room/Board Data
     const roomId = ref(null);
     const board = ref([]);
     const players = ref([]);
@@ -129,10 +104,8 @@ export default {
     const playerName = ref('');
 
     // Round Control
-    const roundStatus = ref('notStarted');  // 'notStarted' | 'countingDown' | 'inProgress' | 'ended'
-    const countdownValue = ref(3);
-    const roundTimeLeft = ref(80);
-    let countdownInterval = null;
+    const roundStatus = ref('notStarted');  // We'll skip 'countingDown' altogether
+    const roundTimeLeft = ref(60);
     let roundInterval = null;
 
     // Drag selection state
@@ -148,23 +121,22 @@ export default {
     const socket = ref(null);
 
     // ===================
-    // Lifecycle / Setup
+    // Lifecycle
     // ===================
 
     onMounted(() => {
-      // Pull player name and ID from cookies or use the router query
+      // Pull player name and ID from cookies or router query
       const existingName = getCookie('playerName');
-      const existingPlayerId = getCookie('playerId');
-
       if (existingName) {
         playerName.value = existingName;
       }
 
+      const existingPlayerId = getCookie('playerId');
       if (existingPlayerId) {
         playerId.value = existingPlayerId;
       } else {
         // Generate a new player ID and store it in cookies
-        const newPlayerId = "player-" + Math.random().toString(36).slice(2, 10);
+        const newPlayerId = 'player-' + Math.random().toString(36).slice(2, 10);
         setCookie('playerId', newPlayerId);
         playerId.value = newPlayerId;
       }
@@ -185,6 +157,9 @@ export default {
     // Methods
     // ===================
 
+    /**
+     * Immediately starts the round after join or create.
+     */
     const joinOrCreateRoom = async () => {
       if (route.params.roomId) {
         try {
@@ -198,9 +173,13 @@ export default {
           players.value = response.data.players;
           roomData.value = response.data;
           setupSocket();
+
+          // Round starts automatically:
+          roundStatus.value = 'inProgress';
+          startRound();
         } catch (error) {
           // If "Room not found", attempt creation
-          if (error.response?.data?.message === "Room not found") {
+          if (error.response?.data?.message === 'Room not found') {
             try {
               const createResponse = await axios.post(`${config.apiUrl}/api/rooms/create`, {
                 roomId: route.params.roomId
@@ -215,77 +194,69 @@ export default {
               players.value = joinResponse.data.players;
               roomData.value = joinResponse.data;
               setupSocket();
+
+              // Round starts automatically:
+              roundStatus.value = 'inProgress';
+              startRound();
             } catch (createError) {
-              toast.error("Error creating room: " + createError.response?.data?.message);
-              router.push("/");
+              toast.error('Error creating room: ' + createError.response?.data?.message);
+              router.push('/');
             }
           } else {
-            toast.error(error.response?.data?.message || "Error joining room");
-            router.push("/");
+            toast.error(error.response?.data?.message || 'Error joining room');
+            router.push('/');
           }
         }
       }
     };
 
-  const setupSocket = () => {
-    socket.value = io(config.socketUrl);
-    socket.value.emit('join-room', roomId.value, playerId.value, route.query.playerName);
+    const setupSocket = () => {
+      socket.value = io(config.socketUrl);
+      socket.value.emit('join-room', roomId.value, playerId.value, route.query.playerName);
 
-    socket.value.on('update-players', (updatedPlayers) => {
-      players.value = updatedPlayers;
-    });
+      socket.value.on('update-players', (updatedPlayers) => {
+        players.value = updatedPlayers;
+      });
 
-    socket.value.on('player-joined', (playerName) => {
-      toast.success(`${playerName} joined the game!`);
-    });
+      socket.value.on('player-joined', (playerName) => {
+        toast.success(`${playerName} joined the game!`);
+      });
 
-    socket.value.on('update-player', (player) => {
-      const index = players.value.findIndex(p => p.playerId === player.playerId);
-      if (index !== -1) {
-        players.value[index] = player;
-      }
-    });
-
-    socket.value.on('round-ended', (data) => {
-      // Another user ended the round
-      handleServerEndRound(data);
-    });
-
-    socket.value.on('new-round', (data) => {
-      // Another user started a new round
-      handleServerNewRound(data);
-    });
-
-    socket.value.on('word-result', ({ playerId: updatedPlayerId, isValid, score }) => {
-      const playerIndex = players.value.findIndex(p => p.playerId === updatedPlayerId);
-      if (playerIndex !== -1) {
-        if (isValid) {
-          players.value[playerIndex].score += score;
-          // Also push the word into wordsFound so we can mark it
-          // (the server already does this, but just to keep in sync)
-        } else if (updatedPlayerId === playerId.value) {
-          toast.error("Invalid word or already found!");
+      socket.value.on('update-player', (player) => {
+        const index = players.value.findIndex((p) => p.playerId === player.playerId);
+        if (index !== -1) {
+          players.value[index] = player;
         }
-      }
-    });
-  };
+      });
 
-    const initiateCountdown = () => {
-      roundStatus.value = 'countingDown';
-      countdownValue.value = 3;
-      if (countdownInterval) clearInterval(countdownInterval);
-      countdownInterval = setInterval(() => {
-        countdownValue.value--;
-        if (countdownValue.value <= 0) {
-          clearInterval(countdownInterval);
-          startRound();
+      socket.value.on('round-ended', (data) => {
+        // Another user ended the round
+        handleServerEndRound(data);
+      });
+
+      socket.value.on('new-round', (data) => {
+        // Another user started a new round
+        handleServerNewRound(data);
+      });
+
+      socket.value.on('word-result', ({ playerId: updatedPlayerId, isValid, score }) => {
+        const playerIndex = players.value.findIndex((p) => p.playerId === updatedPlayerId);
+        if (playerIndex !== -1) {
+          if (isValid) {
+            players.value[playerIndex].score += score;
+          } else if (updatedPlayerId === playerId.value) {
+            toast.error('Invalid word or already found!');
+          }
         }
-      }, 1000);
+      });
     };
 
+    /**
+     * Start the round: sets 'inProgress' and begins the 80-second timer
+     */
     const startRound = () => {
       roundStatus.value = 'inProgress';
-      roundTimeLeft.value = 80;
+      roundTimeLeft.value = 60;
       if (roundInterval) clearInterval(roundInterval);
 
       roundInterval = setInterval(() => {
@@ -311,9 +282,7 @@ export default {
       allValidWords.value = data.allValidWords;
       totalPossibleScore.value = data.totalPossibleScore;
       players.value = data.players; // updated final scores
-      clearInterval(roundInterval); 
-      clearInterval(countdownInterval); 
-      toast.info("Round ended!");
+      clearInterval(roundInterval);
     };
 
     const startNewRound = async () => {
@@ -331,10 +300,12 @@ export default {
       if (!roomData.value) roomData.value = { gameState: {} };
       roomData.value.gameState.validWords = data.validWords;
 
-      roundStatus.value = 'notStarted';
+      roundStatus.value = 'inProgress';
       allValidWords.value = [];
       totalPossibleScore.value = 0;
-      toast.success("New round is ready to start!");
+
+      // Start automatically again if desired:
+      startRound();
     };
 
     // ========== Word Submission ==========
@@ -344,11 +315,11 @@ export default {
       try {
         const response = await axios.post(`${config.apiUrl}/api/rooms/${roomId.value}/submit-word`, {
           playerId: playerId.value,
-          word: word,
+          word: word
         });
         if (response.data.isValid) {
           // Update local player's score & found words
-          const playerIndex = players.value.findIndex(p => p.playerId === response.data.playerId);
+          const playerIndex = players.value.findIndex((p) => p.playerId === response.data.playerId);
           if (playerIndex !== -1) {
             players.value[playerIndex].score = response.data.updatedScore;
             players.value[playerIndex].wordsFound.push(word.toLowerCase());
@@ -360,9 +331,11 @@ export default {
     };
 
     const playerFoundWord = (word) => {
-      const currentPlayer = players.value.find(p => p.playerId === playerId.value);
+      const currentPlayer = players.value.find((p) => p.playerId === playerId.value);
       return currentPlayer && currentPlayer.wordsFound.includes(word.toLowerCase());
     };
+
+    // ========== Drag & Swipe Logic ==========
 
     const CONFIG = {
       INITIAL_SELECTION_THRESHOLD: 1.0,
@@ -383,26 +356,26 @@ export default {
         clientX = event.clientX;
         clientY = event.clientY;
       }
-      
+
       const relativeX = clientX - boardRect.left;
       const relativeY = clientY - boardRect.top;
-      
+
       const col = Math.floor(relativeX / CONFIG.CELL_SIZE);
       const row = Math.floor(relativeY / CONFIG.CELL_SIZE);
-      
+
       if (row < 0 || row >= 4 || col < 0 || col >= 4) return null;
-      
+
       const cellCenterX = (col + 0.5) * CONFIG.CELL_SIZE;
       const cellCenterY = (row + 0.5) * CONFIG.CELL_SIZE;
       const distanceFromCenter = Math.sqrt(
-        Math.pow(relativeX - cellCenterX, 2) + 
-        Math.pow(relativeY - cellCenterY, 2)
+        Math.pow(relativeX - cellCenterX, 2) + Math.pow(relativeY - cellCenterY, 2)
       );
-      
-      const threshold = event.type === 'mousedown' || event.type === 'touchstart'
-        ? CONFIG.CELL_SIZE * CONFIG.INITIAL_SELECTION_THRESHOLD
-        : CONFIG.CELL_SIZE * CONFIG.DRAG_SELECTION_THRESHOLD;
-      
+
+      const threshold =
+        event.type === 'mousedown' || event.type === 'touchstart'
+          ? CONFIG.CELL_SIZE * CONFIG.INITIAL_SELECTION_THRESHOLD
+          : CONFIG.CELL_SIZE * CONFIG.DRAG_SELECTION_THRESHOLD;
+
       if (distanceFromCenter <= threshold) {
         return { row, col };
       }
@@ -413,8 +386,7 @@ export default {
       if (!cell1 || !cell2) return false;
       const rowDiff = Math.abs(cell1.row - cell2.row);
       const colDiff = Math.abs(cell1.col - cell2.col);
-      // Diagonals or orthogonals
-      return (rowDiff <= 1 && colDiff <= 1);
+      return rowDiff <= 1 && colDiff <= 1;
     };
 
     const addToWord = (row, col) => {
@@ -425,7 +397,7 @@ export default {
           selectedCells.value.add(cellKey);
           lastCell.value = { row, col };
           const newWord = Array.from(selectedCells.value)
-            .map(key => {
+            .map((key) => {
               const [r, c] = key.split(',').map(Number);
               return board.value[r][c];
             })
@@ -467,17 +439,16 @@ export default {
       lastCell.value = null;
     };
 
+    // ========== Computed Helpers ==========
+
     const isSelected = (row, col) => {
       return selectedCells.value.has(`${row},${col}`);
     };
 
-    /**
-     * Returns 'valid', 'duplicate', or 'invalid' for the *current* swipe/word.
-     */
     const currentSwipeStatus = computed(() => {
       const word = currentWord.value.toUpperCase();
       if (word.length < 3) {
-        return 'invalid'; 
+        return 'invalid';
       }
       // Is it in the dictionary?
       if (!roomData.value?.gameState?.validWords?.includes(word)) {
@@ -487,50 +458,37 @@ export default {
       if (playerFoundWord(word)) {
         return 'duplicate';
       }
-      // Otherwise it's a valid new word
       return 'valid';
     });
 
-    /**
-     * Class for the "cell-highlight" div for each cell that is currently selected.
-     * We simply check the computed currentSwipeStatus to decide the color.
-     */
     const getCellHighlightClass = (row, col) => {
       if (!isSelected(row, col)) return '';
       if (currentSwipeStatus.value === 'valid') return 'highlight-valid';
       if (currentSwipeStatus.value === 'duplicate') return 'highlight-duplicate';
-      // otherwise, 'invalid'
       return 'highlight-invalid';
     };
 
-    /**
-     * Also apply a background color to the big "current-word" box
-     */
     const highlightClass = computed(() => {
       if (currentSwipeStatus.value === 'valid') return 'valid-word';
       if (currentSwipeStatus.value === 'duplicate') return 'duplicate-word';
       return 'invalid-word';
     });
 
-    // ========== Computed Helpers ==========
-
     const currentPlayerScore = () => {
-      const currentPlayer = players.value.find(p => p.playerId === playerId.value);
+      const currentPlayer = players.value.find((p) => p.playerId === playerId.value);
       return currentPlayer ? currentPlayer.score : 0;
     };
 
-    // Sort players by score descending
     const sortedPlayers = computed(() => {
-      return [...players.value].sort((a, b) => a.score - b.score);
+      return [...players.value].sort((a, b) => b.score - a.score); // Descending
     });
 
-    // Sort valid words by length ascending
     const sortedAllValidWords = computed(() => {
       return [...allValidWords.value].sort((a, b) => b.length - a.length);
     });
 
     return {
-      // Refs
+      // Reactive Properties
       roomId,
       board,
       players,
@@ -539,13 +497,11 @@ export default {
       playerId,
       playerName,
       roundStatus,
-      countdownValue,
       roundTimeLeft,
       allValidWords,
       totalPossibleScore,
 
       // Methods
-      initiateCountdown,
       endRound,
       startNewRound,
       currentPlayerScore,
@@ -570,22 +526,27 @@ export default {
 </script>
 
 <style scoped>
-
 .game-room {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
-
 body {
   margin: 0;
   padding: 0;
 }
 
-h2 {
+/* Remove any countdown or "notStarted" styling—no longer needed */
+
+.in-round-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
+  min-height: 60px;
 }
 
+/* Board styling remains the same... */
 .game-board {
   display: inline-block;
   border: 2px solid #333;
@@ -634,34 +595,11 @@ h2 {
 .highlight-valid {
   background-color: rgba(76, 175, 80, 0.3);
 }
-
 .highlight-duplicate {
   background-color: rgba(255, 235, 59, 0.4);
 }
-
 .highlight-invalid {
   background-color: rgba(158, 158, 158, 0.4);
-}
-
-.in-round-top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  min-height: 60px;
-}
-
-@media (min-width: 500px) {
-  .in-round-top-bar {
-    flex-direction: row;
-    justify-content: space-around;
-  }
-}
-
-.score-label, .timer-label {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin: 10px;
 }
 
 .current-word {
@@ -679,18 +617,23 @@ h2 {
 }
 
 .valid-word {
-  color: #4CAF50;
+  color: #4caf50;
   background-color: #e8f5e9;
 }
-
 .duplicate-word {
   color: #ffca28;
   background-color: #fff8e1;
 }
-
 .invalid-word {
   color: #666;
   background-color: #f5f5f5;
+}
+
+.score-label,
+.timer-label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 10px;
 }
 
 .button {
@@ -703,45 +646,39 @@ h2 {
   margin: 5px;
   font-weight: 600;
 }
-
 .button:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
-
 .button.primary {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
-
 .button.danger {
   background-color: #f44336;
   color: white;
 }
-
 .button.success {
-  background-color: #2196F3;
+  background-color: #2196f3;
   color: white;
 }
 
+/* Round ended results */
 .player-list {
   margin-top: 20px;
   background-color: #f5f5f5;
   padding: 20px;
   border-radius: 8px;
 }
-
 .player-list ul {
   list-style: none;
   padding: 0;
 }
-
 .player-list li {
   padding: 10px;
   margin: 5px 0;
@@ -749,27 +686,23 @@ h2 {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-
 .current-player {
   font-weight: bold;
-  color: #4CAF50;
-  border-left: 4px solid #4CAF50;
+  color: #4caf50;
+  border-left: 4px solid #4caf50;
   padding-left: 6px;
 }
-
 .words-found {
   font-size: 14px;
   color: #666;
   margin-top: 5px;
 }
-
 .valid-words-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
   margin-top: 10px;
 }
-
 .valid-words-grid span {
   background-color: white;
   padding: 8px;
@@ -777,7 +710,6 @@ h2 {
   text-align: center;
   font-size: 14px;
 }
-
 .found-word {
   background-color: #e8f5e9 !important;
   color: #2e7d32;
