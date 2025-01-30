@@ -1,4 +1,4 @@
 export default {
-    apiUrl: '/api',
+    apiUrl: '',
     socketUrl: ''
 };
