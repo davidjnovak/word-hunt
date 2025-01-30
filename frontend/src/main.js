@@ -6,6 +6,10 @@ import 'vue-toastification/dist/index.css'
 
 const app = createApp(App)
 
+router.afterEach((to) => {
+  document.title = to.meta.title || "Word Crack";
+});
+
 const toastOptions = {
   position: 'top-right',
   timeout: 3000,

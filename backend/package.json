@@ -20,7 +20,8 @@
     "mongoose": "^8.7.0",
     "repopack": "^0.1.36",
     "vue": "^3.5.10",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",

@@ -1,11 +1,17 @@
 {
+  "scripts": {
+    "build": "vue-cli-service build"
+  },
   "dependencies": {
+    "aws-cli": "^0.0.2",
     "axios": "^1.7.7",
+    "firebase": "^11.1.0",
     "repopack": "^0.1.41",
     "socket.io": "^4.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4"
+    "@babel/preset-env": "^7.25.4",
+    "@vue/cli-service": "~5.0.0"
   }
 }

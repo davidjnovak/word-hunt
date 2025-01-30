@@ -36,7 +36,7 @@ async function startServer() {
 
     
     app.use(cors({
-      origin: ["https://word-finder-6aaaf.web.app", "http://localhost:5002"],
+      origin: ["https://wordcrack.lol", "http://localhost:5002"],
       methods: ["GET", "POST", "OPTIONS"],
       credentials: true
     }));
