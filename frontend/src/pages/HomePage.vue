@@ -1,7 +1,6 @@
-<!-- HomePage.vue -->
 <template>
   <div class="home-page">
-    <h1>Word Finder</h1>
+    <h1>Word Crack</h1>
     <div class="actions">
       <input 
         v-model="playerName" 
@@ -48,7 +47,6 @@ export default {
       if (redirectedGameId) {
         gameId.value = redirectedGameId;
       }
-
       const existingName = getCookie('playerName');
       if (existingName) {
         playerName.value = existingName;
@@ -60,7 +58,6 @@ export default {
         toast.error('Please fill in both name and game ID.');
         return;
       }
-
       setCookie('playerName', playerName.value.trim());
       router.push(`/game/${gameId.value.trim()}`);
     };
@@ -76,19 +73,26 @@ export default {
 </script>
 
 <style scoped>
+
+:root {
+  background-color: #f0f0f0;
+}
+
 .home-page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f0f0f0;
+  margin: 60px auto 0; 
+  max-width: 400px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
   font-size: 2.5em;
   color: #333;
-  margin-bottom: 2rem;
 }
 
 .actions {
