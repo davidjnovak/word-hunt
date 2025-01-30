@@ -77,10 +77,9 @@ const submitWord = async (req, res) => {
   
   if (roomData) {
     let player = roomData.players.find(p => p.playerId === playerId);
-    
     if (player) {
       const isValid = !player.wordsFound.includes(word) && 
-      roomData.gameState.validWords.includes(word.toUpperCase());
+      roomData.gameState.allValidWords.includes(word.toUpperCase());
       
       if (isValid) {
         player.wordsFound.push(word);
